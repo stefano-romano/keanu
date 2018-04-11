@@ -46,4 +46,5 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
     private fun nextY(): Double {
         return minY + random.nextDouble() * (maxY - minY)
     }
+
 }

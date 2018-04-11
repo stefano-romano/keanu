@@ -1,4 +1,3 @@
-import io.improbable.keanu.kotlin.DoubleOperators
 
 interface IAgent {
 
