@@ -43,7 +43,7 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
 
         }
 
-        Perception(arrayListOf(), arrayListOf())
+        return Perception(arrayListOf(), arrayListOf())
     }
 
     private fun makeTree(): AppleTree<DOUBLE> {
@@ -54,8 +54,10 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
         val x = randomFactory.nextDouble(minX, maxX)
         val y = randomFactory.nextDouble(minY, maxY)
         val appleStock = randomFactory.nextDouble(minStartingApples, maxStartingApples)
+        val scrumperType = getRandomScrumperType()
         val aggression = randomFactory.nextDouble(minAggression, maxAggression)
-        return AppleScrumper(x, y, appleStock, aggression)
+
+        return AppleScrumper(this, x, y, appleStock, aggression, scrumperType, math)
     }
 
     private fun nextX(): Double {
@@ -76,6 +78,15 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
         }
 
         return treesByDistance
+    }
+
+    private fun getRandomScrumperType(): ScrumperTypes {
+        when (random.nextInt(3)) {
+            0 -> return ScrumperTypes.EARTHLING
+            1 -> return ScrumperTypes.MARTIAN
+            2 -> return ScrumperTypes.VENUSIAN
+        }
+        return ScrumperTypes.EARTHLING
     }
 
     inner class Perception(val appleTrees : ArrayList<AppleTree<DOUBLE>>,
