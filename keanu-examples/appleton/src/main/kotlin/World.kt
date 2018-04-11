@@ -1,6 +1,6 @@
 import io.improbable.keanu.kotlin.DoubleOperators
-import io.improbable.keanu.randomFactory.RandomDoubleFactory
 import io.improbable.keanu.randomFactory.RandomFactory
+import java.util.*
 
 class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumpers: Int, val randomFactory: RandomFactory<DOUBLE>) {
 
@@ -8,7 +8,11 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
     val maxX = 10.0
     val minY = -10.0
     val maxY = 10.0
-    val min
+    val minStartingApples = 5.0
+    val maxStartingApples = 5.0
+    val appleGrowthRate = 1.0
+
+    val random = Random()
 
     val trees = arrayListOf<AppleTree<DOUBLE>>()
     val scrumpers = arrayListOf<AppleScrumper<DOUBLE>>()
@@ -19,7 +23,7 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
 
     init {
         for (i in 0..numTrees) {
-            trees.add(AppleTree<DOUBLE>())
+            trees.add(makeTree())
         }
 
         for (i in 0..numScrumpers) {
@@ -27,21 +31,19 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
         }
     }
 
-    private fun makeTree() {
-        AppleTree<DOUBLE>(randomFactory.nextDouble(minX, maxX), randomFactory.nextDouble(minY, maxY), )
+    private fun makeTree(): AppleTree<DOUBLE> {
+        return AppleTree(this, nextX(), nextY(), randomFactory.nextDouble(minStartingApples, maxStartingApples), appleGrowthRate)
     }
 
     private fun makeScrumper() {
-        randomFactory.
+
     }
 
-    private fun getRandomX(): DOUBLE {
-        if (randomFactory is RandomDoubleFactory) {
-            randomFactory.
-        }
+    private fun nextX(): Double {
+        return minX + random.nextDouble() * (maxX - minX)
+    }
 
-        if (randomFactory is RandomDoubleFactory) {
-
-        }
+    private fun nextY(): Double {
+        return minY + random.nextDouble() * (maxY - minY)
     }
 }
