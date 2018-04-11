@@ -10,4 +10,6 @@ class AppleScrumper<DOUBLE : DoubleOperators<DOUBLE>> (initialXLocation: DOUBLE,
     override fun step() {
 
     }
+
+
 }
