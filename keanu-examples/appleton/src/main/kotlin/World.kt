@@ -34,14 +34,16 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
 
     }
 
-    fun lookAround(x: DOUBLE, y: DOUBLE): World<DOUBLE>.Perception {
+    fun lookAround(x: DOUBLE, y: DOUBLE, range: Double): World<DOUBLE>.Perception {
+        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE>>()
         for (tree in trees) {
-            val xDist = x - tree.xLocation
-            val yDist = y - tree.yLocation
+            val xDist = tree.xLocation - x
+            val yDist = tree.yLocation - y
             val dist = math.pow((xDist * xDist) + (yDist * yDist), 0.5)
+
         }
 
-        return Perception(arrayListOf(), arrayListOf())
+        Perception(arrayListOf(), arrayListOf())
     }
 
     private fun makeTree(): AppleTree<DOUBLE> {
@@ -62,6 +64,18 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
 
     private fun nextY(): Double {
         return minY + random.nextDouble() * (maxY - minY)
+    }
+
+    private fun treesInRange(x: DOUBLE, y: DOUBLE, range: Double): TreeMap<DOUBLE, AppleTree<DOUBLE>> {
+        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE>>()
+        for (tree in trees) {
+            val xDist = x - tree.xLocation
+            val yDist = y - tree.yLocation
+            val inverseDist = 1.0 / math.pow((xDist * xDist) + (yDist * yDist), 0.5)
+
+        }
+
+        return treesByDistance
     }
 
     inner class Perception(val appleTrees : ArrayList<AppleTree<DOUBLE>>,
