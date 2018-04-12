@@ -1,26 +1,29 @@
+import io.improbable.keanu.kotlin.BooleanOperators
 import io.improbable.keanu.kotlin.DoubleOperators
 
-class AppleScrumper<DOUBLE : DoubleOperators<DOUBLE>> (val world: World<DOUBLE>, var xLocation: DOUBLE, var yLocation: DOUBLE,
-                                                       var appleStock: DOUBLE, val agressionLevel: DOUBLE,
-                                                       val species: ScrumperTypes, val math: ModelMath<DOUBLE>) : IAgent {
+class AppleScrumper<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN>>(
+        val world: World<DOUBLE, BOOLEAN>, var xLocation: DOUBLE, var yLocation: DOUBLE, var appleStock: DOUBLE,
+        val agressionLevel: DOUBLE, val species: ScrumperTypes, val math: KeanuMath<DOUBLE, BOOLEAN>) : IAgent {
 
     var paralysisTimer = 0
 
-    var localTrees = listOf<AppleTree<DOUBLE>>()
-    var localScrumpers = listOf<AppleScrumper<DOUBLE>>()
+    var localTrees = listOf<AppleTree<DOUBLE, BOOLEAN>>()
+    var localScrumpers = listOf<AppleScrumper<DOUBLE, BOOLEAN>>()
 
     // TODO do we need a memory of paralysed scrumpers and empty trees to ensure against just hovering around dud objects each step?
 
     override fun step() {
-        // Check if paralysed, if so decrement the paralysis
-        if (paralysisTimer != 0) {
-            paralysisTimer -= 1
-        } else {
-            // Check what's around
-            var surroundings = world.lookAround(xLocation, yLocation)
-            localTrees = surroundings.appleTrees
-            localScrumpers = surroundings.appleScrumpers
-        }
+//        // Check if paralysed, if so decrement the paralysis
+//        if (paralysisTimer != 0) {
+//            paralysisTimer -= 1
+//        } else {
+//            // Check what's around
+//            var surroundings = world.lookAround(xLocation, yLocation, species.visionRange)
+//            localTrees = surroundings.appleTrees
+//            localScrumpers = surroundings.appleScrumpers
+//        }
+
+        println("SCRUMP!")
     }
 
 
@@ -37,41 +40,41 @@ class AppleScrumper<DOUBLE : DoubleOperators<DOUBLE>> (val world: World<DOUBLE>,
     }
 
 
-    fun prioritiseTrees(appleTree: AppleTree<DOUBLE>) {
-        var treeDistance = getDistance(appleTree.xLocation, appleTree.yLocation)
-        if (treeDistance < species.speed * 1.0) {
-            pickApples(appleTree)
-        } else {
-            moveTowards(appleTree.xLocation, appleTree.yLocation)
-        }
+    fun prioritiseTrees(appleTree: AppleTree<DOUBLE, BOOLEAN>) {
+//        var treeDistance = getDistance(appleTree.xLocation, appleTree.yLocation)
+//        if (treeDistance < species.speed * 1.0) {
+//            pickApples(appleTree)
+//        } else {
+//            moveTowards(appleTree.xLocation, appleTree.yLocation)
+//        }
 
     }
 
 
-    fun prioritiseScrumpers(appleScrumper: AppleScrumper<DOUBLE>) {
-        var scrumperDistance = getDistance(appleScrumper.xLocation, appleScrumper.yLocation)
-        if (scrumperDistance < species.speed * 1.0) {
-            attackScrumper(appleScrumper)
-        } else {
-            moveTowards(appleScrumper.xLocation, appleScrumper.yLocation)
-        }
+    fun prioritiseScrumpers(appleScrumper: AppleScrumper<DOUBLE, BOOLEAN>) {
+//        var scrumperDistance = getDistance(appleScrumper.xLocation, appleScrumper.yLocation)
+//        if (scrumperDistance < species.speed * 1.0) {
+//            attackScrumper(appleScrumper)
+//        } else {
+//            moveTowards(appleScrumper.xLocation, appleScrumper.yLocation)
+//        }
 
     }
 
 
-    fun pickApples(appleTree: AppleTree<DOUBLE>) {
-        if (appleTree.appleCount > 1.0) {
-            appleTree.appleCount -= 1.0
-            appleStock += 1.0
-        } else {
-            // Pop that tree of the list and reassess priorities
-            localTrees = localTrees.subList(1, localTrees.size)
-            assessPriorities()
-        }
+    fun pickApples(appleTree: AppleTree<DOUBLE, BOOLEAN>) {
+//        if (appleTree.appleCount > 1.0) {
+//            appleTree.appleCount -= 1.0
+//            appleStock += 1.0
+//        } else {
+//            // Pop that tree of the list and reassess priorities
+//            localTrees = localTrees.subList(1, localTrees.size)
+//            assessPriorities()
+//        }
     }
 
 
-    fun attackScrumper(appleScrumper: AppleScrumper<DOUBLE>) {
+    fun attackScrumper(appleScrumper: AppleScrumper<DOUBLE, BOOLEAN>) {
         // if the scrumper isn't paralysed, attack them! (+10 to their paralysis timer
         if (appleScrumper.paralysisTimer == 0) {
             appleScrumper.paralysisTimer += 10
@@ -115,7 +118,7 @@ class AppleScrumper<DOUBLE : DoubleOperators<DOUBLE>> (val world: World<DOUBLE>,
         var xDifference = xLocation - otherX
         var yDifference = yLocation - otherY
         var distance = getDistance(otherX, otherY)
-        return listOf(xDifference/distance, yDifference/distance)
+        return listOf(xDifference / distance, yDifference / distance)
     }
 
 
@@ -123,6 +126,6 @@ class AppleScrumper<DOUBLE : DoubleOperators<DOUBLE>> (val world: World<DOUBLE>,
         var xDifference = xLocation - otherX
         var yDifference = yLocation - otherY
         var distance = getDistance(otherX, otherY)
-        return listOf(xDifference/distance, yDifference/distance)
+        return listOf(xDifference / distance, yDifference / distance)
     }
 }

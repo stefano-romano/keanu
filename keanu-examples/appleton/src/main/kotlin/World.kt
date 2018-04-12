@@ -3,7 +3,9 @@ import io.improbable.keanu.randomFactory.RandomFactory
 import java.util.*
 import io.improbable.keanu.kotlin.*
 
-class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumpers: Int, val randomFactory: RandomFactory<DOUBLE>, val math: ModelMath<DOUBLE>) {
+class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN>>(
+        val numTrees: Int, val numScrumpers: Int, val randomFactory: RandomFactory<DOUBLE>,
+        val math: KeanuMath<DOUBLE, BOOLEAN>) {
 
     val minX = -10.0
     val maxX = 10.0
@@ -17,8 +19,8 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
 
     val random = Random()
 
-    val trees = arrayListOf<AppleTree<DOUBLE>>()
-    val scrumpers = arrayListOf<AppleScrumper<DOUBLE>>()
+    val trees = arrayListOf<AppleTree<DOUBLE, BOOLEAN>>()
+    val scrumpers = arrayListOf<AppleScrumper<DOUBLE, BOOLEAN>>()
 
     init {
         for (i in 0..numTrees) {
@@ -30,27 +32,35 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
         }
     }
 
-    fun step() {
-
-    }
-
-    fun lookAround(x: DOUBLE, y: DOUBLE, range: Double): World<DOUBLE>.Perception {
-        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE>>()
-        for (tree in trees) {
-            val xDist = tree.xLocation - x
-            val yDist = tree.yLocation - y
-            val dist = math.pow((xDist * xDist) + (yDist * yDist), 0.5)
-
+    fun run(steps: Int) {
+        for (i in 1..steps) {
+            println("Step $i")
+            step()
         }
-
-        return Perception(arrayListOf(), arrayListOf())
     }
 
-    private fun makeTree(): AppleTree<DOUBLE> {
+    fun step() {
+        trees.forEach(AppleTree<DOUBLE, BOOLEAN>::step)
+        scrumpers.forEach(AppleScrumper<DOUBLE, BOOLEAN>::step)
+    }
+
+    fun lookAround(x: DOUBLE, y: DOUBLE, range: Double): World<DOUBLE, BOOLEAN>.Perception {
+//        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE>>()
+//        for (tree in trees) {
+//            val xDist = tree.xLocation - x
+//            val yDist = tree.yLocation - y
+//            val dist = math.pow((xDist * xDist) + (yDist * yDist), 0.5)
+//
+//        }
+
+        return Perception(trees, scrumpers)
+    }
+
+    private fun makeTree(): AppleTree<DOUBLE, BOOLEAN> {
         return AppleTree(this, nextX(), nextY(), randomFactory.nextDouble(minStartingApples, maxStartingApples), appleGrowthRate)
     }
 
-    private fun makeScrumper(): AppleScrumper<DOUBLE> {
+    private fun makeScrumper(): AppleScrumper<DOUBLE, BOOLEAN> {
         val x = randomFactory.nextDouble(minX, maxX)
         val y = randomFactory.nextDouble(minY, maxY)
         val appleStock = randomFactory.nextDouble(minStartingApples, maxStartingApples)
@@ -68,8 +78,8 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
         return minY + random.nextDouble() * (maxY - minY)
     }
 
-    private fun treesInRange(x: DOUBLE, y: DOUBLE, range: Double): TreeMap<DOUBLE, AppleTree<DOUBLE>> {
-        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE>>()
+    private fun treesInRange(x: DOUBLE, y: DOUBLE, range: Double): TreeMap<DOUBLE, AppleTree<DOUBLE, BOOLEAN>> {
+        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE, BOOLEAN>>()
         for (tree in trees) {
             val xDist = x - tree.xLocation
             val yDist = y - tree.yLocation
@@ -89,6 +99,6 @@ class World<DOUBLE : DoubleOperators<DOUBLE>>(val numTrees: Int, val numScrumper
         return ScrumperTypes.EARTHLING
     }
 
-    inner class Perception(val appleTrees : ArrayList<AppleTree<DOUBLE>>,
-                           val appleScrumpers : ArrayList<AppleScrumper<DOUBLE>>)
+    inner class Perception(val appleTrees : ArrayList<AppleTree<DOUBLE, BOOLEAN>>,
+                           val appleScrumpers : ArrayList<AppleScrumper<DOUBLE, BOOLEAN>>)
 }
