@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BoolVertex extends Vertex<Boolean> implements BooleanOperators<BoolVertex> {
+public abstract class BoolVertex extends Vertex<Boolean> implements BooleanOperators<Vertex<Boolean>, BoolVertex> {
 
     public static final ConstantVertex<Boolean> TRUE = new ConstantVertex<>(true);
     public static final ConstantVertex<Boolean> FALSE = new ConstantVertex<>(false);

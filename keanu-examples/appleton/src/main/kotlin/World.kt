@@ -3,9 +3,9 @@ import io.improbable.keanu.randomFactory.RandomFactory
 import java.util.*
 import io.improbable.keanu.kotlin.*
 
-class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN>>(
+class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN_IN, BOOLEAN : BooleanOperators<BOOLEAN_IN, BOOLEAN>>(
         val numTrees: Int, val numScrumpers: Int, val randomFactory: RandomFactory<DOUBLE>,
-        val math: KeanuMath<DOUBLE, BOOLEAN>) {
+        val math: KeanuMath<DOUBLE, BOOLEAN_IN, BOOLEAN>, val flow: KeanuControlFlow<BOOLEAN_IN, BOOLEAN>) {
 
     val minX = -10.0
     val maxX = 10.0
@@ -19,8 +19,8 @@ class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN
 
     val random = Random()
 
-    val trees = arrayListOf<AppleTree<DOUBLE, BOOLEAN>>()
-    val scrumpers = arrayListOf<AppleScrumper<DOUBLE, BOOLEAN>>()
+    val trees = arrayListOf<AppleTree<DOUBLE, BOOLEAN_IN, BOOLEAN>>()
+    val scrumpers = arrayListOf<AppleScrumper<DOUBLE, BOOLEAN_IN, BOOLEAN>>()
 
     init {
         for (i in 0..numTrees) {
@@ -40,11 +40,11 @@ class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN
     }
 
     fun step() {
-        trees.forEach(AppleTree<DOUBLE, BOOLEAN>::step)
-        scrumpers.forEach(AppleScrumper<DOUBLE, BOOLEAN>::step)
+        trees.forEach(AppleTree<DOUBLE, BOOLEAN_IN, BOOLEAN>::step)
+        scrumpers.forEach(AppleScrumper<DOUBLE, BOOLEAN_IN, BOOLEAN>::step)
     }
 
-    fun lookAround(x: DOUBLE, y: DOUBLE, range: Double): World<DOUBLE, BOOLEAN>.Perception {
+    fun lookAround(x: DOUBLE, y: DOUBLE, range: Double): World<DOUBLE, BOOLEAN_IN, BOOLEAN>.Perception {
 //        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE>>()
 //        for (tree in trees) {
 //            val xDist = tree.xLocation - x
@@ -56,18 +56,18 @@ class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN
         return Perception(trees, scrumpers)
     }
 
-    private fun makeTree(): AppleTree<DOUBLE, BOOLEAN> {
+    private fun makeTree(): AppleTree<DOUBLE, BOOLEAN_IN, BOOLEAN> {
         return AppleTree(this, nextX(), nextY(), randomFactory.nextDouble(minStartingApples, maxStartingApples), appleGrowthRate)
     }
 
-    private fun makeScrumper(): AppleScrumper<DOUBLE, BOOLEAN> {
+    private fun makeScrumper(): AppleScrumper<DOUBLE, BOOLEAN_IN, BOOLEAN> {
         val x = randomFactory.nextDouble(minX, maxX)
         val y = randomFactory.nextDouble(minY, maxY)
         val appleStock = randomFactory.nextDouble(minStartingApples, maxStartingApples)
         val scrumperType = getRandomScrumperType()
         val aggression = randomFactory.nextDouble(minAggression, maxAggression)
 
-        return AppleScrumper(this, x, y, appleStock, aggression, scrumperType, math)
+        return AppleScrumper(this, x, y, appleStock, aggression, scrumperType, math, flow)
     }
 
     private fun nextX(): Double {
@@ -78,8 +78,8 @@ class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN
         return minY + random.nextDouble() * (maxY - minY)
     }
 
-    private fun treesInRange(x: DOUBLE, y: DOUBLE, range: Double): TreeMap<DOUBLE, AppleTree<DOUBLE, BOOLEAN>> {
-        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE, BOOLEAN>>()
+    private fun treesInRange(x: DOUBLE, y: DOUBLE, range: Double): TreeMap<DOUBLE, AppleTree<DOUBLE, BOOLEAN_IN, BOOLEAN>> {
+        val treesByDistance = TreeMap<DOUBLE, AppleTree<DOUBLE, BOOLEAN_IN, BOOLEAN>>()
         for (tree in trees) {
             val xDist = x - tree.xLocation
             val yDist = y - tree.yLocation
@@ -99,6 +99,6 @@ class World<DOUBLE : DoubleOperators<DOUBLE>, BOOLEAN : BooleanOperators<BOOLEAN
         return ScrumperTypes.EARTHLING
     }
 
-    inner class Perception(val appleTrees : ArrayList<AppleTree<DOUBLE, BOOLEAN>>,
-                           val appleScrumpers : ArrayList<AppleScrumper<DOUBLE, BOOLEAN>>)
+    inner class Perception(val appleTrees : ArrayList<AppleTree<DOUBLE, BOOLEAN_IN, BOOLEAN>>,
+                           val appleScrumpers : ArrayList<AppleScrumper<DOUBLE, BOOLEAN_IN, BOOLEAN>>)
 }
