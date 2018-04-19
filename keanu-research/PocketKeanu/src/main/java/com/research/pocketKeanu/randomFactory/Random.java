@@ -6,7 +6,7 @@ import com.research.pocketKeanu.abstractTypes.IntLike;
 import io.improbable.keanu.distributions.continuous.Gaussian;
 import io.improbable.keanu.distributions.continuous.Uniform;
 
-public class Random implements ContinuousRandomFactory<ADouble>, DiscreteRandomFactory<AInt> {
+public class Random implements RandomFactory<ADouble,AInt> {
 
     private java.util.Random random = new java.util.Random();
 
