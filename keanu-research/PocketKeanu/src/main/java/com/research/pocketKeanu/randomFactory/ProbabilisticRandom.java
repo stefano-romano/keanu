@@ -30,6 +30,11 @@ public class ProbabilisticRandom implements RandomFactory<DifferentiableDouble, 
     }
 
     @Override
+    public DifferentiableDouble nextConstant(double value) {
+        return new DifferentiableDouble(value);
+    }
+
+    @Override
     public AInt nextInt() {
         return null;
     }
