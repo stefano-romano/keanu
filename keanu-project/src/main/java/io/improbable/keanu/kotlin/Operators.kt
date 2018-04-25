@@ -7,5 +7,5 @@ interface Operators<T> {
     operator fun plus(that: T): T
     operator fun times(that: T): T
     operator fun div(that: T): T
-    operator fun unaryMinus(): T
+//    operator fun unaryMinus(): T
 }

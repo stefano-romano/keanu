@@ -35,7 +35,7 @@ class ArithmeticInteger(val value: Int) : IntegerOperators<ArithmeticInteger> {
         return ArithmeticInteger(this.value / value)
     }
 
-    override fun unaryMinus(): ArithmeticInteger {
+     fun unaryMinus(): ArithmeticInteger {
         return ArithmeticInteger(value) * -1
     }
 
