@@ -1,37 +1,56 @@
 package com.research.pocketKeanu.distributions
 
-import com.research.pocketKeanu.abstractTypes.DoubleLike
+import com.research.pocketKeanu.abstractTypes.AInt
 import com.research.pocketKeanu.autoDiff.DifferentiableDouble
 import com.research.pocketKeanu.randomFactory.DifferentiableRandom
-import com.research.pocketKeanu.randomFactory.DoubleLikeRandomFactory
 import com.research.pocketKeanu.randomFactory.Recorder
+import com.research.pocketKeanu.trace.Trace
 
-class ProbabilisticProgram : GraphicalProbability {
+class ProbabilisticProgram : PDF {
+
     val model : ContinuousProbabilisticFunction
     val inputs : List<DifferentiableDouble>
     val outputs : List<DifferentiableDouble>
+    val trace : Trace<DifferentiableDouble, AInt>
+    val logP : DifferentiableDouble
 
-    constructor(val model : ContinuousProbabilisticFunction, val inputs : List<DifferentiableDouble>) {
+    constructor(model : ContinuousProbabilisticFunction, inputs : List<DifferentiableDouble>) {
         this.model = model
         this.inputs = inputs
         val rand = Recorder(DifferentiableRandom())
         this.outputs = model.apply(inputs, rand)
+        trace = rand.trace
+        logP = rand.logProb
+    }
 
+    fun observe(observations : Map<DifferentiableDouble, Double>) : ConditionalPDF {
+        return ConditionalPDF(this, observations)
+    }
+
+    override fun logProb(randVars: Map<DifferentiableDouble, Double>): DifferentiableDouble {
+        var valchange = false
+        randVars.forEach { (vertex, value) ->
+            if(vertex.value != value) {
+                valchange = true
+                vertex.value = value
+            }
+        }
+        if(valchange) execute()
+        return logP
+    }
+
+    override fun getVars(): List<DifferentiableDouble> {
+        return inputs + trace.doubles
     }
 
 
-    override fun logProb(randVars: MutableMap<DifferentiableDouble, Double>?): DifferentiableDouble {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun execute() {
+        for(dd in inputs) {
+            dd.propagateFwdAutoDiff()
+        }
+        for(dd in trace.doubles) {
+            dd.propagateFwdAutoDiff()
+        }
     }
-
-//    override fun <T : DoubleLike<T>> logProb(randVars: DoubleLikeRandomFactory<T>, givens: List<T>): T {
-//        randVars.setLogProb(0.0)
-//        model.apply(givens, randVars)
-//        return randVars.logProb
-//    }
-//
-//    override fun <T : DoubleLike<T>> apply(input: List<T>, rand: DoubleLikeRandomFactory<T>): List<T> {
-//        return model.apply(input, rand)
-//    }
 
 }

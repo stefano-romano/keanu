@@ -2,31 +2,27 @@ package com.research.pocketKeanu.randomFactory
 
 import com.research.pocketKeanu.abstractTypes.DoubleLike
 import com.research.pocketKeanu.abstractTypes.IntLike
+import com.research.pocketKeanu.trace.Trace
 
 class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, I>) : RandomFactory<D,I> {
 
-    val doubles = ArrayList<D>()
-    val ints = ArrayList<I>()
+    val trace = Trace<D,I>()
     var isRecording = true
-    var doubleCounter = 0;
-    var intCounter = 0;
 
     fun record() {
-        doubles.clear()
-        ints.clear()
+        trace.clear()
         isRecording = true
     }
 
     fun replay() {
-        doubleCounter = 0
-        intCounter = 0
+        trace.rewind()
         isRecording = false
     }
 
     override fun nextGaussian(): D {
-        if(!isRecording) replayNextDoubleLike()
+        if(!isRecording) trace.nextDouble()
         val r = factory.nextGaussian()
-        doubles.add(r)
+        trace.add(r)
         return r
     }
 
@@ -39,26 +35,17 @@ class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, 
     }
 
     override fun nextConstant(value: Double): D {
-        if(!isRecording) replayNextDoubleLike()
+        if(!isRecording) trace.nextDouble()
         val r = factory.nextConstant(value)
-        doubles.add(r)
+        trace.add(r)
         return r
     }
 
     override fun nextInt(): I {
-        if(!isRecording) return replayNextIntLike()
+        if(!isRecording) return trace.nextInt()
         val r = factory.nextInt();
-        ints.add(r)
+        trace.add(r)
         return r
     }
 
-    fun replayNextDoubleLike() : D {
-        if(intCounter >= ints.size) throw(IndexOutOfBoundsException())
-        return doubles[intCounter++]
-    }
-
-    fun replayNextIntLike() : I {
-        if(intCounter >= ints.size) throw(IndexOutOfBoundsException())
-        return ints[intCounter++]
-    }
 }
