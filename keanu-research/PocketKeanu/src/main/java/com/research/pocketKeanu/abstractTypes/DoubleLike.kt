@@ -7,4 +7,6 @@ interface DoubleLike<T : DoubleLike<T>> : ArithmeticOperators<T> {
     operator fun div(value: Double): T
     operator fun unaryMinus(): T
     fun log() : T
+    fun pow(exponent: T) : T
+    fun pow(exponent: Double) : T
 }

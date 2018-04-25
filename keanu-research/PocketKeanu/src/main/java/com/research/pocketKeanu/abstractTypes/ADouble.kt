@@ -1,6 +1,17 @@
 package com.research.pocketKeanu.abstractTypes
 
 class ADouble(val value: Double) : DoubleLike<ADouble> {
+    override fun pow(exponent: ADouble): ADouble {
+        return ADouble(Math.pow(this.value, exponent.value))
+    }
+
+    override fun pow(exponent: Double): ADouble {
+        return ADouble(Math.pow(this.value, exponent))
+    }
+
+    override fun log(): ADouble {
+        return ADouble(Math.log(value))
+    }
 
     override fun minus(that: ADouble): ADouble {
         return ADouble(value - that.value)

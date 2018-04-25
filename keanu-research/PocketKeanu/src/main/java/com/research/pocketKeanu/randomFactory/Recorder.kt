@@ -3,16 +3,13 @@ package com.research.pocketKeanu.randomFactory
 import com.research.pocketKeanu.abstractTypes.DoubleLike
 import com.research.pocketKeanu.abstractTypes.IntLike
 
-class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, I>, val jointP : D) : RandomFactory<D,I> {
+class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, I>) : RandomFactory<D,I> {
 
     val doubles = ArrayList<D>()
     val ints = ArrayList<I>()
     var isRecording = true
     var doubleCounter = 0;
     var intCounter = 0;
-
-    constructor(factory: RandomFactory<D, I>) : this(factory, factory.nextConstant(0.0)) {
-    }
 
     fun record() {
         doubles.clear()
@@ -26,18 +23,19 @@ class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, 
         isRecording = false
     }
 
-    override fun nextGaussian(mu: D, sigma: D): D {
+    override fun nextGaussian(): D {
         if(!isRecording) replayNextDoubleLike()
-        val r = factory.nextGaussian(mu,sigma)
+        val r = factory.nextGaussian()
         doubles.add(r)
         return r
     }
 
-    override fun nextGaussian(mu: Double, sigma: Double): D {
-        if(!isRecording) replayNextDoubleLike()
-        val r = factory.nextGaussian(mu,sigma)
-        doubles.add(r)
-        return r
+    override fun getLogProb(): D {
+        return factory.logProb
+    }
+
+    override fun setLogProb(value: Double) {
+        factory.setLogProb(value)
     }
 
     override fun nextConstant(value: Double): D {

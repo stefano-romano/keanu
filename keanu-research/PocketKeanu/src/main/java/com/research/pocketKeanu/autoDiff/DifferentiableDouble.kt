@@ -6,11 +6,20 @@ import io.improbable.operators.arith.Minus
 import io.improbable.operators.arith.Plus
 import io.improbable.operators.arith.Times
 import io.improbable.operators.math.Log
+import io.improbable.operators.math.Pow
 
 // Good resource for understanding forward and reverse mode automatic-differentiation:
 // https://rufflewind.com/2016-12-30/reverse-mode-automatic-differentiation
 
 open class DifferentiableDouble : DoubleLike<DifferentiableDouble> {
+    override fun pow(exponent: DifferentiableDouble): DifferentiableDouble {
+        return Pow(this, exponent)
+    }
+
+    override fun pow(exponent: Double): DifferentiableDouble {
+        return Pow(this, DifferentiableDouble(exponent))
+    }
+
     override fun log(): DifferentiableDouble {
         return Log(this)
     }
@@ -109,6 +118,10 @@ open class DifferentiableDouble : DoubleLike<DifferentiableDouble> {
     }
 
     open fun propagateRevAutoDiff() {
+    }
+
+    override fun toString() : String {
+        return "[$value + $delta dx]"
     }
 
 }

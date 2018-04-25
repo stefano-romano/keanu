@@ -56,16 +56,8 @@ class AutodiffMath {
             return Pow(a, DifferentiableDouble(0.5))
         }
 
-        fun log(x: DifferentiableDouble, base: DifferentiableDouble): DifferentiableDouble {
-            return Log(x, base)
-        }
-
         fun log(x: DifferentiableDouble): DifferentiableDouble {
-            return Log(x, DifferentiableDouble(Math.E))
-        }
-
-        fun log10(x: DifferentiableDouble): DifferentiableDouble {
-            return Log(x, DifferentiableDouble(10.0))
+            return Log(x)
         }
     }
 
