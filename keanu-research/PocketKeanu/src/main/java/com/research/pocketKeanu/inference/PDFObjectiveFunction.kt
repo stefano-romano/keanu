@@ -15,7 +15,8 @@ class PDFObjectiveFunction(val pdf : PDF) {
             for(e in params.entries) {
                 e.setValue(doubles[i++])
             }
-            pdf.logProb(params).value
+            val fitness = pdf.logProb(params).value
+            fitness
         })
     }
 
@@ -23,10 +24,13 @@ class PDFObjectiveFunction(val pdf : PDF) {
         return ObjectiveFunctionGradient({
             doubles ->
             var i = 0
+
             for(e in params.entries) {
                 e.setValue(doubles[i++])
             }
-            pdf.logProb(params).propagateRevAutoDiff()
+            val logP = pdf.logProb(params)
+            logP.delta = 1.0
+            logP.propagateRevAutoDiff()
             val grad = DoubleArray(doubles.size)
             i = 0
             for(e in params.keys) {

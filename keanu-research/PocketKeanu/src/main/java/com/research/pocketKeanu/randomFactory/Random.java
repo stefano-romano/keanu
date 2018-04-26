@@ -6,6 +6,7 @@ import com.research.pocketKeanu.abstractTypes.IntLike;
 import io.improbable.keanu.distributions.continuous.Gaussian;
 import io.improbable.keanu.distributions.continuous.Uniform;
 
+import static com.research.pocketKeanu.abstractTypes.PrefixOperationsKt.pow;
 import static java.lang.Math.log;
 
 public class Random implements RandomFactory<ADouble,AInt> {
@@ -35,6 +36,14 @@ public class Random implements RandomFactory<ADouble,AInt> {
         logProb = logProb.minus(x*x/2.0 + logSqrt2PI);
         return new ADouble(x);
     }
+
+    @Override
+    public ADouble nextGaussian(ADouble mu, ADouble sigma) {
+        ADouble x = new ADouble(random.nextGaussian());
+        logProb = logProb.minus(pow(x.minus(mu).div(sigma), 2.0).div(2.0).plus(logSqrt2PI).plus(sigma));
+        return x;
+    }
+
 
     @Override
     public AInt nextInt() {

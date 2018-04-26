@@ -19,9 +19,9 @@ class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, 
         isRecording = false
     }
 
-    override fun nextGaussian(): D {
+    override fun nextGaussian(mu : D, sigma : D): D {
         if(!isRecording) trace.nextDouble()
-        val r = factory.nextGaussian()
+        val r = factory.nextGaussian(mu, sigma)
         trace.add(r)
         return r
     }
@@ -35,9 +35,7 @@ class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, 
     }
 
     override fun nextConstant(value: Double): D {
-        if(!isRecording) trace.nextDouble()
         val r = factory.nextConstant(value)
-        trace.add(r)
         return r
     }
 
@@ -47,5 +45,4 @@ class Recorder<D : DoubleLike<D>,I : IntLike<I>>(val factory : RandomFactory<D, 
         trace.add(r)
         return r
     }
-
 }

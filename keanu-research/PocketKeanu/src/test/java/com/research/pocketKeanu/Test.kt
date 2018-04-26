@@ -16,16 +16,16 @@ class Test : ContinuousProbabilisticFunction {
         val (t1, t2, temp) = probProgram.outputs
         val observedProg = probProgram.observe(mapOf(
                 t1 to 21.0,
-                t2 to 20.0 ))
-        observedProg.findMAP(1000)
+                t2 to 22.0 ))
+        observedProg.findMAP(200)
         println(temp.value)
     }
 
 
     override fun <T : DoubleLike<T>> apply(doubleParams: List<T>, rand: DoubleLikeRandomFactory<T>): List<T> {
         val temp = rand.nextGaussian(20.0,2.0)
-        val t1 = temp + rand.nextGaussian()
-        val t2 = temp + rand.nextGaussian()
+        val t1 = rand.nextGaussian(temp, rand.nextConstant( 1.0))
+        val t2 = rand.nextGaussian(temp, rand.nextConstant(1.0))
 
         return listOf(t1, t2, temp)
     }

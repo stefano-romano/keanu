@@ -35,22 +35,12 @@ class ProbabilisticProgram : PDF {
                 vertex.value = value
             }
         }
-        if(valchange) execute()
+        if(valchange) logP.updateValue()
         return logP
     }
 
     override fun getVars(): List<DifferentiableDouble> {
         return inputs + trace.doubles
-    }
-
-
-    fun execute() {
-        for(dd in inputs) {
-            dd.propagateFwdAutoDiff()
-        }
-        for(dd in trace.doubles) {
-            dd.propagateFwdAutoDiff()
-        }
     }
 
 }
