@@ -24,8 +24,8 @@ class Test : ContinuousProbabilisticFunction {
 
     override fun <T : DoubleLike<T>> apply(doubleParams: List<T>, rand: DoubleLikeRandomFactory<T>): List<T> {
         val temp = rand.nextGaussian(20.0,2.0)
-        val t1 = rand.nextGaussian(temp, rand.nextConstant( 1.0))
-        val t2 = rand.nextGaussian(temp, rand.nextConstant(1.0))
+        val t1 = rand.nextGaussian(temp, 1.0)
+        val t2 = rand.nextGaussian(temp, 1.0)
 
         return listOf(t1, t2, temp)
     }
