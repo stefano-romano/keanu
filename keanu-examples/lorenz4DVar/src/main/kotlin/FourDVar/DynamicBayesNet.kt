@@ -3,38 +3,28 @@ package FourDVar
 import io.improbable.keanu.kotlin.ArithmeticDouble
 import io.improbable.keanu.network.BayesNet
 import io.improbable.keanu.vertices.dbl.DoubleVertex
-import io.improbable.keanu.vertices.dbl.probabilistic.GaussianVertex
 
-class DynamicBayesNet(probabilisticModel: IModel<DoubleVertex>) {
+class DynamicBayesNet<T : DoubleVertex> {
 
-    var startState = probabilisticModel.getGaussianState()
-    var observationVertices = probabilisticModel.runWindow()
-    var endState = probabilisticModel.getState()
-    var net = BayesNet(startState.iterator().next().connectedGraph)
+    var startState : Collection<T>
+    var observationVertices : Collection<DoubleVertex>
+    var endState : Collection<DoubleVertex>
+    var net : BayesNet
 
-    private fun getProbabilisticVertices(): Collection<DoubleVertex> {
-        val vertices = ArrayList<DoubleVertex>(startState.count() + endState.count() + observationVertices.count())
-        vertices.addAll(startState)
-        vertices.addAll(endState)
-        vertices.addAll(observationVertices)
-        return vertices
+    constructor(probabilisticModel: IModel<DoubleVertex>, startState : Collection<T>) {
+        // generate Bayes' network
+        this.startState = startState
+        probabilisticModel.setState(startState)
+        observationVertices = probabilisticModel.step()
+        endState = probabilisticModel.getState()
+        net = BayesNet(startState.iterator().next().connectedGraph)
     }
 
-    fun addObservations(observations: Iterable<ArithmeticDouble>) {
+    fun observe(observations: Iterable<ArithmeticDouble>) {
         val observation = observations.iterator()
         for (vertex in observationVertices) {
             if (!observation.hasNext()) throw(ArrayIndexOutOfBoundsException("wrong number of observations"))
             vertex.observe(observation.next().value)
         }
-    }
-
-    fun getModeOfWindowStartState (): Collection<Double> {
-        val it = startState.iterator()
-        val posteriorWindowStartState = ArrayList<Double>(startState.count())
-        while (it.hasNext()) {
-            val ss = it.next() as GaussianVertex
-            posteriorWindowStartState.add(ss.mu.value)
-        }
-        return posteriorWindowStartState
     }
 }

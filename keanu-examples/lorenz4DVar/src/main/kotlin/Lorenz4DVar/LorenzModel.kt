@@ -3,7 +3,6 @@ package Lorenz4DVar
 import FourDVar.IModel
 import io.improbable.keanu.kotlin.DoubleOperators
 import io.improbable.keanu.randomFactory.RandomFactory
-import io.improbable.keanu.vertices.dbl.probabilistic.GaussianVertex
 import java.util.ArrayList
 
 class LorenzModel<DOUBLE: DoubleOperators<DOUBLE>>(var x: DOUBLE, var y: DOUBLE, var z: DOUBLE,
@@ -15,13 +14,17 @@ class LorenzModel<DOUBLE: DoubleOperators<DOUBLE>>(var x: DOUBLE, var y: DOUBLE,
     val DT = 0.01
 
     val MICROSTEPS_PER_STEP = 5
-    val OBSERVATION_ERROR = 1.0
+    val OBSERVATION_ERROR = 0.5
 
-    override fun runWindow(): Iterable<DOUBLE> {
+    constructor(startState : List<DOUBLE>, rand : RandomFactory<DOUBLE>) :
+            this(startState[0], startState[1], startState[2], rand)
+
+
+    override fun step(): Collection<DOUBLE> {
         val observations = ArrayList<DOUBLE>(MICROSTEPS_PER_STEP)
 
         for (i in 0 until MICROSTEPS_PER_STEP) {
-            step()
+            microStep()
             observations.add(observe())
         }
 
@@ -29,7 +32,7 @@ class LorenzModel<DOUBLE: DoubleOperators<DOUBLE>>(var x: DOUBLE, var y: DOUBLE,
     }
 
 
-    override fun step() {
+    fun microStep() {
         val dx = ((y - x) * SIGMA) * DT
         val dy = (x * (z - RHO) + y) * (-DT)
         val dz = (x * y - z * BETA) * DT
@@ -44,16 +47,12 @@ class LorenzModel<DOUBLE: DoubleOperators<DOUBLE>>(var x: DOUBLE, var y: DOUBLE,
     }
 
 
-    override fun getState(): Iterable<DOUBLE> {
+    override fun getState(): Collection<DOUBLE> {
         return listOf(x, y, z)
     }
 
-    override fun getGaussianState(): Iterable<GaussianVertex> {
-        return getState() as Iterable<GaussianVertex>
-    }
 
-
-    override fun setState(state: Iterable<DOUBLE>) {
+    override fun setState(state: Collection<DOUBLE>) {
         val it = state.iterator()
         x = it.next()
         y = it.next()

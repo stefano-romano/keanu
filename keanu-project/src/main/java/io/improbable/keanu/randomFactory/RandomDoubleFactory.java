@@ -44,4 +44,9 @@ public class RandomDoubleFactory implements RandomFactory<ArithmeticDouble> {
         double randomDouble = Gaussian.sample(mu, sigma, random);
         return new ArithmeticDouble(randomDouble);
     }
+
+    @Override
+    public ArithmeticDouble nextConstant(double val) {
+        return new ArithmeticDouble(val);
+    }
 }

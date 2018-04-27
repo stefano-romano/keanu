@@ -20,4 +20,5 @@ public interface RandomFactory<T> {
         return nextGaussian(0.0, 1.0);
     }
 
+    T nextConstant(double val);
 }
