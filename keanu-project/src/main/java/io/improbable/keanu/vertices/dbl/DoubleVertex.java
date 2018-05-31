@@ -9,6 +9,7 @@ import io.improbable.keanu.vertices.dbl.nonprobabilistic.ConstantDoubleVertex;
 import io.improbable.keanu.vertices.dbl.nonprobabilistic.diff.DualNumber;
 import io.improbable.keanu.vertices.dbl.nonprobabilistic.operators.binary.*;
 import io.improbable.keanu.vertices.dbl.nonprobabilistic.operators.unary.*;
+import io.improbable.keanu.vertices.dbl.probabilistic.GaussianVertex;
 
 import java.util.*;
 import java.util.function.Function;
@@ -175,6 +176,12 @@ public abstract class DoubleVertex extends ContinuousVertex<Double> implements D
 
     public DoubleVertex acos() {
         return new ArcCosVertex(this);
+    }
+
+    public GaussianVertex noisyObserve(double value, double sigma) {
+        GaussianVertex g = new GaussianVertex(this, sigma);
+        g.observe(value);
+        return g;
     }
 
 }
