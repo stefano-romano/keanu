@@ -19,49 +19,32 @@ make C not a constant value but still completely dependent on A and B.
 ### The Double Family
 
 A DoubleVertex can be used by most arithmetic operators. They can be used to describe a problem
-that can be solved using gradient ascent optimization.
+that can be solved using gradient assent optimization and their value is a double. 
 
-* Probabilistic
-    * Beta
-    * Exponential
-    * Gamma
-    * Gaussian
-    * Laplace
-    * Logistic
-    * Smooth Uniform
-    * Triangular
-    * Uniform
-    
-* Non-Probabilistic
-    * Operators
-    
+The currently available double vertices are
+- [Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/dbl/probabilistic/package-summary.html)
+- [Non-Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/dbl/nonprobabilistic/package-summary.html)
+
 ### The Integer Family
 
-An IntegerVertex can also be used by most arithmetic operators.
+An IntegerVertex is similar to the DoubleVertex except its value is an integer.
 
-* Probabilistic
-    * Poisson
-    * Uniform
-    * Fuzzy Cast To Integer
-    
-* Non-Probabilistic
-    * Operators
+The currently available integer vertices are
+- [Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/intgr/probabilistic/package-summary.html)
+- [Non-Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/intgr/nonprobabilistic/package-summary.html)
 
 ### The Boolean (true/false) Family
 
 A BoolVertex can be used by most boolean operators. These can be observed directly and used in MCMC.
 
-* Probabilistic
-    * Flip
-    
-* Non-Probabilistic
-    * Operators
-    * Boolean Cast
+The currently available boolean vertices are
+- [Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/bool/probabilistic/package-summary.html)
+- [Non-Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/bool/nonprobabilistic/package-summary.html)
 
-### The Generic family
+### The Generic (everything else) family
 
-These are the vertices that can have any type as a value. This type can be an Enum or a user defined object.
-An example of this is the SelectVertex<T> where T is any type.
+These are the vertices that can have any type as a value. For example, this type can be an Enum or any user defined object.
+Let's look at an example of this in Keanu with the `SelectVertex` which will return a value of the specified Enum `MyType`.
 
 ```java
     public enum MyType {
@@ -71,10 +54,10 @@ An example of this is the SelectVertex<T> where T is any type.
     public SelectVertex<MyType> getSelectorForMyType() {
 
         LinkedHashMap<MyType, DoubleVertex> frequency = new LinkedHashMap<>();
-        frequency.put(A, ConstantVertex.of(0.25));
-        frequency.put(B, ConstantVertex.of(0.25));
-        frequency.put(C, ConstantVertex.of(0.25));
-        frequency.put(D, ConstantVertex.of(0.25));
+        frequency.put(A, new ConstantDoubleVertex(0.25));
+        frequency.put(B, new ConstantDoubleVertex(0.25));
+        frequency.put(C, new ConstantDoubleVertex(0.25));
+        frequency.put(D, new ConstantDoubleVertex(0.25));
 
         return new SelectVertex<MyType>(frequency);
     }
@@ -83,11 +66,15 @@ An example of this is the SelectVertex<T> where T is any type.
 The getSelectorForMyType() method would return a probabilistic vertex that would contain an 
 object of type MyType A, B, C or D, 25% of the time respectively.
 
-* Probabilistic
-    * Select
+The currently available generic vertices are
+- [Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/generic/probabilistic/package-summary.html)
+- [Non-Probabilistic](https://static.javadoc.io/io.improbable/keanu/0.0.10/io/improbable/keanu/vertices/generic/nonprobabilistic/package-frame.html)
 
-* Non-Probabilistic
-    * Operators
-    * Constant
-    * If
-    * Multiplexer
+
+### Tensors
+
+Vertices also have a `shape`, which describes the tensor shape contained within them. A vertex with shape
+[2,2] represents a matrix of 2 by 2. A vertex of shape [1,3] represents a row vector of length 3. The shape
+can be of any amount of dimensions and length.
+
+Read more about tensors [here](06-tensors.md) 
