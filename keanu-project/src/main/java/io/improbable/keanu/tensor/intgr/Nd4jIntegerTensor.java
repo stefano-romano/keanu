@@ -163,7 +163,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
     @Override
     public IntegerTensor getGreaterThanMask(IntegerTensor greaterThanThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (greaterThanThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -186,7 +186,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
     @Override
     public IntegerTensor getGreaterThanOrEqualToMask(IntegerTensor greaterThanOrEqualToThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (greaterThanOrEqualToThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -209,7 +209,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
     @Override
     public IntegerTensor getLessThanMask(IntegerTensor lessThanThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (lessThanThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -232,7 +232,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
     @Override
     public IntegerTensor getLessThanOrEqualToMask(IntegerTensor lessThanOrEqualToThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (lessThanOrEqualToThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -280,7 +280,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
 
     @Override
     public IntegerTensor concat(int dimension, IntegerTensor... those) {
-        INDArray dup = tensor.dup();
+        INDArray dup = TypedINDArrayFactory.duplicate(tensor);
         INDArray[] toConcat = new INDArray[those.length + 1];
         toConcat[0] = dup;
         for (int i = 1; i <= those.length; i++) {
@@ -426,7 +426,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
             mask = tensor.lte(value.scalar());
         } else {
             INDArray indArray = unsafeGetNd4J(value);
-            mask = tensor.dup();
+            mask = TypedINDArrayFactory.duplicate(tensor);
             Nd4j.getExecutioner().exec(new OldLessThanOrEqual(mask, indArray, mask, getLength()));
         }
 
@@ -465,7 +465,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
             mask = tensor.gt(value.scalar());
         } else {
             INDArray indArray = unsafeGetNd4J(value);
-            mask = tensor.dup();
+            mask = TypedINDArrayFactory.duplicate(tensor);
             Nd4j.getExecutioner().exec(new OldGreaterThanOrEqual(mask, indArray, mask, getLength()));
         }
 
@@ -479,7 +479,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
 
     @Override
     public DoubleTensor toDouble() {
-        return new Nd4jDoubleTensor(tensor.dup());
+        return new Nd4jDoubleTensor(TypedINDArrayFactory.duplicate(tensor));
     }
 
     @Override
@@ -524,7 +524,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
 
     @Override
     public IntegerTensor duplicate() {
-        return new Nd4jIntegerTensor(tensor.dup());
+        return new Nd4jIntegerTensor(TypedINDArrayFactory.duplicate(tensor));
     }
 
     @Override
@@ -545,7 +545,7 @@ public class Nd4jIntegerTensor implements IntegerTensor {
 
     @Override
     public IntegerTensor slice(int dimension, int index) {
-        INDArray dup = tensor.dup();
+        INDArray dup = TypedINDArrayFactory.duplicate(tensor);
         INDArray slice = dup.slice(index, dimension);
         return new Nd4jIntegerTensor(slice);
     }
@@ -633,12 +633,12 @@ public class Nd4jIntegerTensor implements IntegerTensor {
 
     @Override
     public double[] asFlatDoubleArray() {
-        return tensor.dup().data().asDouble();
+        return TypedINDArrayFactory.duplicate(tensor).data().asDouble();
     }
 
     @Override
     public int[] asFlatIntegerArray() {
-        return tensor.dup().data().asInt();
+        return TypedINDArrayFactory.duplicate(tensor).data().asInt();
     }
 
     @Override

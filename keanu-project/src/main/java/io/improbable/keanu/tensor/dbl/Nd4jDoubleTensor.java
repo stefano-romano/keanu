@@ -136,7 +136,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
 
     @Override
     public DoubleTensor duplicate() {
-        return new Nd4jDoubleTensor(tensor.dup());
+        return new Nd4jDoubleTensor(TypedINDArrayFactory.duplicate(tensor));
     }
 
     @Override
@@ -217,7 +217,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
 
     @Override
     public DoubleTensor choleskyDecomposition() {
-        INDArray dup = tensor.dup();
+        INDArray dup = TypedINDArrayFactory.duplicate(tensor);
         Nd4j.getBlasWrapper().lapack().potrf(dup, false);
         return new Nd4jDoubleTensor(dup);
     }
@@ -561,7 +561,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
     @Override
     public DoubleTensor getGreaterThanMask(DoubleTensor greaterThanThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (greaterThanThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -584,7 +584,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
     @Override
     public DoubleTensor getGreaterThanOrEqualToMask(DoubleTensor greaterThanOrEqualToThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (greaterThanOrEqualToThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -607,7 +607,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
     @Override
     public DoubleTensor getLessThanMask(DoubleTensor lessThanThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (lessThanThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -630,7 +630,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
     @Override
     public DoubleTensor getLessThanOrEqualToMask(DoubleTensor lessThanOrEqualToThis) {
 
-        INDArray mask = tensor.dup();
+        INDArray mask = TypedINDArrayFactory.duplicate(tensor);
 
         if (lessThanOrEqualToThis.isScalar()) {
             Nd4j.getExecutioner().exec(
@@ -737,7 +737,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
 
     @Override
     public double determinant() {
-        INDArray dup = tensor.dup();
+        INDArray dup = TypedINDArrayFactory.duplicate(tensor);
         double[][] asMatrix = dup.toDoubleMatrix();
         RealMatrix matrix = new Array2DRowRealMatrix(asMatrix);
         return new LUDecomposition(matrix).getDeterminant();
@@ -750,14 +750,14 @@ public class Nd4jDoubleTensor implements DoubleTensor {
 
     @Override
     public DoubleTensor slice(int dimension, int index) {
-        INDArray dup = tensor.dup();
+        INDArray dup = TypedINDArrayFactory.duplicate(tensor);
         INDArray slice = dup.slice(index, dimension);
         return new Nd4jDoubleTensor(slice);
     }
 
     @Override
     public DoubleTensor concat(int dimension, DoubleTensor... those) {
-        INDArray dup = tensor.dup();
+        INDArray dup = TypedINDArrayFactory.duplicate(tensor);
         INDArray[] toConcat = new INDArray[those.length + 1];
         toConcat[0] = dup;
         for (int i = 1; i <= those.length; i++) {
@@ -802,7 +802,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
         } else {
 
             INDArray indArray = unsafeGetNd4J(value);
-            mask = tensor.dup();
+            mask = TypedINDArrayFactory.duplicate(tensor);
             Nd4j.getExecutioner().exec(new OldLessThanOrEqual(mask, indArray, mask, getLength()));
         }
 
@@ -841,7 +841,7 @@ public class Nd4jDoubleTensor implements DoubleTensor {
             mask = tensor.gt(value.scalar());
         } else {
             INDArray indArray = unsafeGetNd4J(value);
-            mask = tensor.dup();
+            mask = TypedINDArrayFactory.duplicate(tensor);
             Nd4j.getExecutioner().exec(new OldGreaterThanOrEqual(mask, indArray, mask, getLength()));
         }
 
@@ -954,12 +954,12 @@ public class Nd4jDoubleTensor implements DoubleTensor {
 
     @Override
     public double[] asFlatDoubleArray() {
-        return tensor.dup().data().asDouble();
+        return TypedINDArrayFactory.duplicate(tensor).data().asDouble();
     }
 
     @Override
     public int[] asFlatIntegerArray() {
-        return tensor.dup().data().asInt();
+        return TypedINDArrayFactory.duplicate(tensor).data().asInt();
     }
 
     @Override
