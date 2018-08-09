@@ -12,6 +12,7 @@ plugins {
     id 'io.franzbecker.gradle-lombok' version '1.14'
     id 'java'
     id 'maven'
+    id "me.champeau.gradle.jmh" version '0.4.7'
 }
 
 group = 'io.improbable'
@@ -143,4 +144,24 @@ artifacts {
 lombok { // optional: values below are the defaults
     version = "1.16.20"
     sha256 = ""
+}
+
+jmh {
+    iterations = 5 // Number of measurement iterations to do.
+    benchmarkMode = ['ss']
+    // Benchmark mode. Available modes are: [Throughput/thrpt, AverageTime/avgt, SampleTime/sample, SingleShotTime/ss, All/all]
+    fork = 1 // How many times to forks a single benchmark. Use 0 to disable forking altogether
+    humanOutputFile = project.file("${project.buildDir}/reports/jmh/human.txt") // human-readable output file
+    resultsFile = project.file("${project.buildDir}/reports/jmh/results.txt") // results file
+    timeOnIteration = '1s' // Time to spend at each measurement iteration.
+    resultFormat = 'CSV' // Result format type (one of CSV, JSON, NONE, SCSV, TEXT)
+    timeout = '1s' // Timeout for benchmark iteration.
+    timeUnit = 'ms' // Output time unit. Available time units are: [m, s, ms, us, ns].
+    verbosity = 'NORMAL' // Verbosity mode. Available modes are: [SILENT, NORMAL, EXTRA]
+    warmup = '1s' // Time to spend at each warmup iteration.
+    warmupIterations = 3 // Number of warmup iterations to do.
+    jmhVersion = '1.21' // Specifies JMH version
+    includeTests = true
+    duplicateClassesStrategy = 'fail'
+    // Strategy to apply when encountring duplicate classes during creation of the fat jar (i.e. while executing jmhJar task)
 }
