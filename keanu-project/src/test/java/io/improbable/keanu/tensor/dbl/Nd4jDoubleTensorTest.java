@@ -421,6 +421,7 @@ public class Nd4jDoubleTensorTest {
         DoubleTensor largerTensor = DoubleTensor.create(3, new int[] {2, 2, 2});
 
         assertArrayEquals(smallerTensor.minus(largerTensor).asFlatDoubleArray(), smallerTensor.minusInPlace(largerTensor).asFlatDoubleArray(), 1e-6);
+        assertEquals(smallerTensor.minusInPlace(largerTensor).asFlatArray().length, 8);
     }
 
     @Test
@@ -429,6 +430,7 @@ public class Nd4jDoubleTensorTest {
         DoubleTensor largerTensor = DoubleTensor.create(3, new int[] {2, 2, 2});
 
         assertArrayEquals(smallerTensor.plus(largerTensor).asFlatDoubleArray(), smallerTensor.plusInPlace(largerTensor).asFlatDoubleArray(), 1e-6);
+        assertEquals(smallerTensor.plusInPlace(largerTensor).asFlatArray().length, 8);
     }
 
     @Test
@@ -437,6 +439,7 @@ public class Nd4jDoubleTensorTest {
         DoubleTensor largerTensor = DoubleTensor.create(3, new int[] {2, 2, 2});
 
         assertArrayEquals(smallerTensor.times(largerTensor).asFlatDoubleArray(), smallerTensor.timesInPlace(largerTensor).asFlatDoubleArray(), 1e-6);
+        assertEquals(smallerTensor.timesInPlace(largerTensor).asFlatArray().length, 8);
     }
 
     @Test
@@ -445,5 +448,6 @@ public class Nd4jDoubleTensorTest {
         DoubleTensor largerTensor = DoubleTensor.create(3, new int[] {2, 2, 2});
 
         assertArrayEquals(smallerTensor.div(largerTensor).asFlatDoubleArray(), smallerTensor.divInPlace(largerTensor).asFlatDoubleArray(), 1e-6);
+        assertEquals(smallerTensor.divInPlace(largerTensor).asFlatArray().length, 8);
     }
 }
