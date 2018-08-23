@@ -20,7 +20,7 @@ public interface DiscreteDistribution extends Distribution<IntegerTensor> {
 
         int max = Collections.max(pSupport.getMax().minus(pSupport.getMin()).asFlatList());
         DoubleTensor sum = Nd4jDoubleTensor.zeros(pSupport.getShape());
-        for (int i = 0; i < max; i++) {
+        for (int i = 0; i <= max; i++) {
             IntegerTensor t = this.getSupport().getMin().plus(i);
 
             DoubleTensor pLogPmf = this.logProb(t);

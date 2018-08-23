@@ -71,7 +71,7 @@ public class Bernoulli implements Distribution<BooleanTensor> {
             DoubleTensor pPmfPlusNeg1 = pPmf.unaryMinus().plusInPlace(1.);
             DoubleTensor qPmfPlusNeg1 = qPmf.unaryMinus().plusInPlace(1.);
 
-            return pPmf.times(pPmf.div(qPmf).logInPlace()).plus(pPmfPlusNeg1.times(pPmfPlusNeg1.div(qPmfPlusNeg1).logInPlace()));
+            return pPmf.times(pPmf.div(qPmf).logInPlace()).plusInPlace(pPmfPlusNeg1.times(pPmfPlusNeg1.div(qPmfPlusNeg1).logInPlace()));
         } else {
             return Distribution.super.computeKLDivergence(q);
         }
